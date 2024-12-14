@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analog-Digital Wall Clock</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4; /* Light wall-like background */
+      font-family: 'Arial', sans-serif;
+    }
+
+    .clock {
+      position: relative;
+      width: 350px;
+      height: 350px;
+      background: #fff;
+      border: 10px solid #ccc;
+      border-radius: 50%;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .hand {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      transform-origin: center bottom;
+      transform: rotate(0deg);
+    }
+
+    .hand .number {
+      font-size: 14px;
+      font-weight: bold;
+      color: #333; /* Darker text for contrast */
+    }
+
+    /* Center circle for design */
+    .center-circle {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: #333;
+      border-radius: 50%;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <div class="clock">
+    <div class="center-circle"> 
+        <div class="hand" id="hour-hand"></div>
+        <div class="hand" id="minute-hand"></div>
+        <div class="hand" id="second-hand"></div>
+    </div>
+   
+  </div>
+
+  <script>
+    const hourHand = document.getElementById("hour-hand");
+    const minuteHand = document.getElementById("minute-hand");
+    const secondHand = document.getElementById("second-hand");
+
+    // Function to create numbers for a hand
+    function createNumberHand(num, count) {
+      const formattedNum = num < 10 ? `0${num}` : `${num}`; // Add leading zero if necessary
+      let result = "";
+      for (let i = 0; i < count; i++) {
+        result += `<div class="number">${formattedNum}</div>`;
+      }
+      return result;
+    }
+
+    // Update the clock
+    function setClock() {
+      const now = new Date();
+      const hours = now.getHours() % 12 || 12; // Convert to 12-hour format
+      const minutes = now.getMinutes();
+      const seconds = now.getSeconds();
+
+      // Create number hands
+      hourHand.innerHTML = createNumberHand(hours, 6); // Shorter hand (6 steps)
+      minuteHand.innerHTML = createNumberHand(minutes, 12); // Longer hand (12 steps)
+      secondHand.innerHTML = createNumberHand(seconds, 15); // Even longer hand (15 steps)
+
+      // Rotate hands to the correct positions
+      const hourRotation = (hours * 30) + (minutes / 2); // 360° / 12 = 30° per hour
+      const minuteRotation = minutes * 6; // 360° / 60 = 6° per minute
+      const secondRotation = seconds * 6; // 360° / 60 = 6° per second
+
+      hourHand.style.transform = `rotate(${hourRotation}deg)`;
+      minuteHand.style.transform = `rotate(${minuteRotation}deg)`;
+      secondHand.style.transform = `rotate(${secondRotation}deg)`;
+    }
+
+    // Initialize the clock and update every second
+    setInterval(setClock, 1000);
+    setClock();
+  </script>
+</body>
+</html>
